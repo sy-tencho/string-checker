@@ -15,11 +15,11 @@ rules:
     - hoge
 ```
 
-**name**: name of a rule
-**message**: message that you want to show when target strings are included
-**level (error | warning)**: whether you want to just warn or make the workflow failed
-**caseSensitive (bool)**: whether you want to check target strings with case-sensitive
-**targets**: target strings
+- **name**: name of a rule
+- **message**: message that you want to show when target strings are included
+- **level (error | warning)**: whether you want to just warn or make the workflow failed
+- **caseSensitive (bool)**: whether you want to check target strings with case-sensitive
+- **targets**: target strings
 
 #### Add a workflow
 
@@ -40,5 +40,5 @@ build:
     confFilePath: 'string-checker/config.yml'
 ```
 
-**filePattern**: file pattern that you explore (required, [pattern syntax](https://pkg.go.dev/path/filepath#Match))
-**confFilePath**: path to config file (optional, default is `string-checker/config.yml`)
+- **filePattern**: file pattern that you explore (required, [pattern syntax](https://pkg.go.dev/path/filepath#Match))
+- **confFilePath**: path to config file (optional, default is `string-checker/config.yml`)
