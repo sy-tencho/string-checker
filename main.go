@@ -30,8 +30,8 @@ type conf struct {
 type level string
 
 var (
-	levelarning level = "warning" //lint:ignore U1000 ignore
-	levelError  level = "error"   //lint:ignore U1000 ignore
+	levelWarning level = "warning" //lint:ignore U1000 ignore
+	levelError   level = "error"   //lint:ignore U1000 ignore
 )
 
 func main() {
@@ -48,6 +48,9 @@ func main() {
 	}
 
 	c, err := getConf(confFilePath)
+	checkError(err)
+
+	err = checkLevel(c)
 	checkError(err)
 
 	merr := new(multierror.Error)
@@ -75,6 +78,16 @@ func checkError(e error) {
 	if e != nil {
 		log.Fatalf("error: %v", e)
 	}
+}
+
+func checkLevel(c *conf) error {
+	for _, r := range c.Rules {
+		if r.Level != levelError && r.Level != levelWarning {
+			return fmt.Errorf("invalid level: %s", r.Level)
+		}
+	}
+
+	return nil
 }
 
 func getConf(fileName string) (*conf, error) {

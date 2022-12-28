@@ -2,7 +2,7 @@ name: "string checker"
 description: "a simple Github Action to check if certain words are included in source code."
 inputs:
   filePattern:
-    description: "target file path pattern (optional)"
+    description: "target file path pattern"
     required: true
   confFilePath:
     description: "path to conf file"
