@@ -3,10 +3,10 @@ A simple Github Action to check if certain strings are included in the source co
 
 ## Inputs
 ### filePattern
-*optional* - `string` - file pattern that you explore.  (refer to [pattern syntax](https://pkg.go.dev/path/filepath#Match).)
+*optional* - `string` - file pattern to search for. (refer to [pattern syntax](https://pkg.go.dev/path/filepath#Match).)
 
 ### filePaths
-*optional* - `string` - file paths that you search for.
+*optional* - `string` - file paths to search for.
 ### confFilePath
 *optional* - `string` - path to config file. default is `string-checker/config.yml`.
 
