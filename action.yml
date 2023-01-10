@@ -3,7 +3,10 @@ description: "a simple Github Action to check if certain words are included in s
 inputs:
   filePattern:
     description: "target file path pattern"
-    required: true
+    required: false
+  filePaths:
+      description: "target file paths"
+      required: false
   confFilePath:
     description: "path to conf file"
     required: false
