@@ -13,9 +13,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var (
-	DefaultConfFilePath = "string-checker/config.yml"
-)
+var DefaultConfFilePath = "string-checker/config.yml"
 
 type conf struct {
 	Rules []struct {
@@ -30,17 +28,39 @@ type conf struct {
 type level string
 
 var (
-	levelWarning level = "warning" //lint:ignore U1000 ignore
-	levelError   level = "error"   //lint:ignore U1000 ignore
+	levelWarning level = "warning"
+	levelError   level = "error"
 )
 
 func main() {
 	checkEnv()
 
+	filePaths := os.Getenv("INPUT_FILEPATHS")
 	filePattern := os.Getenv("INPUT_FILEPATTERN")
 
-	targetFiles, err := filepath.Glob(filePattern)
+	targetFilesByPaths := strings.Split(filePaths, ",")
+	targetFilesByPattern, err := filepath.Glob(filePattern)
 	checkError(err)
+
+	targetFiles := make([]string, 0, max(targetFilesByPaths, targetFilesByPattern))
+
+	if filePaths != "" && filePattern == "" {
+		targetFiles = targetFilesByPaths
+	}
+
+	if filePaths == "" && filePattern != "" {
+		targetFiles = targetFilesByPattern
+	}
+
+	if filePaths != "" && filePattern != "" {
+		for _, t := range targetFilesByPaths {
+			for _, tt := range targetFilesByPattern {
+				if t == tt {
+					targetFiles = append(targetFiles, t)
+				}
+			}
+		}
+	}
 
 	confFilePath := os.Getenv("INPUT_CONFFILEPATH")
 	if confFilePath == "" {
@@ -50,12 +70,9 @@ func main() {
 	c, err := getConf(confFilePath)
 	checkError(err)
 
-	err = checkLevel(c)
-	checkError(err)
-
 	merr := new(multierror.Error)
-	for _, targetFile := range targetFiles {
-		err := scan(targetFile, c)
+	for _, t := range targetFiles {
+		err := scan(t, c)
 		merr = multierror.Append(merr, err)
 	}
 
@@ -63,14 +80,8 @@ func main() {
 }
 
 func checkEnv() {
-	envs := []string{
-		"INPUT_FILEPATTERN",
-	}
-
-	for _, env := range envs {
-		if os.Getenv(env) == "" {
-			log.Fatalf("env: %s is required", env)
-		}
+	if os.Getenv("INPUT_FILEPATTERN") == "" && os.Getenv("INPUT_FILEPATHS") == "" {
+		log.Fatalf("either filePattern of filePaths is required")
 	}
 }
 
@@ -80,14 +91,12 @@ func checkError(e error) {
 	}
 }
 
-func checkLevel(c *conf) error {
-	for _, r := range c.Rules {
-		if r.Level != levelError && r.Level != levelWarning {
-			return fmt.Errorf("invalid level: %s", r.Level)
-		}
+func max(a []string, b []string) int {
+	if len(a) > len(b) {
+		return len(a)
+	} else {
+		return len(b)
 	}
-
-	return nil
 }
 
 func getConf(fileName string) (*conf, error) {
