@@ -5,8 +5,8 @@ inputs:
     description: "target file path pattern"
     required: false
   filePaths:
-      description: "target file paths"
-      required: false
+    description: "target file paths"
+    required: false
   confFilePath:
     description: "path to conf file"
     required: false
