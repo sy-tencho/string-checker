@@ -1,10 +1,11 @@
-FROM golang:1.19 as builder
+FROM golang:1.20 as builder
 
 WORKDIR /app
-COPY . /app
+COPY go.mod go.sum /app/
+RUN go mod download
 
-RUN go mod tidy
-RUN CGO_ENABLED=0 go build -ldflags="-w -s" -v -o app .
+COPY src/** /app
+RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o app .
 
 FROM gcr.io/distroless/static
 
